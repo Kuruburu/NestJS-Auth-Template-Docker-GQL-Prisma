@@ -5,5 +5,6 @@ It comes with:
   - GQL and REST, it supports both of them with decorator @CurrentUser() that returns a user from a database
   - TestContainers for e2e testing
   - Google Auth
+
 If you find this project usefull, please give it a star
 If you see some bad practices or want to add somethin feel free to do so.
