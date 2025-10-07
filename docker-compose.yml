@@ -1,0 +1,51 @@
+services:
+  nest-api:
+    container_name: auth-template-api
+    build:
+      context: .
+      target: development
+    restart: always
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    networks:
+      - auth-template-network
+
+  postgres:
+    container_name: auth-template-postgres-db
+    image: postgres:17-alpine
+    restart: always
+    volumes:
+      - auth-template-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    networks:
+      - auth-template-network
+
+  pgadmin:
+    container_name: auth-template-pgadmin
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - "5050:80"
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    networks:
+      - auth-template-network
+
+volumes:
+  auth-template-data:
+
+networks:
+  auth-template-network:
+    name: auth-template-network
