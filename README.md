@@ -1,13 +1,9 @@
-wymagania co do dockera
-
-aplikacja powinna zawierac wszystko do debugowania, czyli api, postgres i pgAdmin
-
-- powinna miec fresh start, - czyli przygotowuje wszystko od zera do gotowej pracy nad projektem
-- powinna miec fresh e2e - czyli oddzielna baze danych na ktorej wykonaja sie wszystkie testy e2e
-- przy testach e2e, baza danych powinna byc resetowany za kazdym wruchomieniem tesetow
-
-fresh - start
-
-"setupFilesAfterEnv": [
-"./test/setupTests.e2e.ts"
-],
+NestJS authentication template which includes everything you would want from a starter project
+It comes with:
+  - Docker, as well as docker-compose file with PostgreSQL database and pgAdmin
+  - Authentication and Authorization done with JWT tokens using passport.js
+  - GQL and REST, it supports both of them with decorator @CurrentUser() that returns a user from a database
+  - TestContainers for e2e testing
+  - Google Auth
+If you find this project usefull, please give it a star
+If you see some bad practices or want to add somethin feel free to do so.
