@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, NotFoundException, Post, Res, UseGuards } from '@nestjs/common';
 import { Public } from 'src/common/decorators/public.decorator';
 import { AuthService } from './auth.service';
 import { LoginInput } from './dto/login.input';
@@ -10,10 +10,15 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { UserDto } from 'src/users/dto/user.dto';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
 import { Response } from 'express';
+import { ConfigService } from '@nestjs/config';
+import { OAuthConfig } from 'src/common/configs/config.interface';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Public()
   @Post('signup')
@@ -62,12 +67,22 @@ export class AuthController {
   @Public()
   @UseGuards(GoogleAuthGuard)
   @Get('google/login')
-  googleLogin() {}
+  googleLogin() {
+    const googleConfig = this.configService.get<OAuthConfig>('OAuthConfig');
+    console.log(googleConfig);
+    if (!googleConfig?.enableGoogleAuth) {
+      throw new NotFoundException('Google login is disabled');
+    }
+  }
 
   @Public()
   @UseGuards(GoogleAuthGuard)
   @Get('google/callback')
   async googleCallback(@CurrentUser() user: UserDto, @Res() res: Response) {
+    const googleConfig = this.configService.get<OAuthConfig>('OAuthConfig');
+    if (!googleConfig?.enableGoogleAuth) {
+      throw new NotFoundException('Google login is disabled');
+    }
     const tokens = await this.authService.login(user, false);
     res.redirect(`http://localhost:3000?token=${tokens.accessToken}`);
   }

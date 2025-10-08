@@ -1,6 +1,6 @@
 services:
   nest-api:
-    container_name: auth-template-api
+    container_name: playtime-api
     build:
       context: .
       target: development
@@ -15,23 +15,23 @@ services:
     depends_on:
       - postgres
     networks:
-      - auth-template-network
+      - playtime-network
 
   postgres:
-    container_name: auth-template-postgres-db
+    container_name: playtime-postgres-db
     image: postgres:17-alpine
     restart: always
     volumes:
-      - auth-template-data:/var/lib/postgresql/data
+      - playtime-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     env_file:
       - .env
     networks:
-      - auth-template-network
+      - playtime-network
 
   pgadmin:
-    container_name: auth-template-pgadmin
+    container_name: playtime-pgadmin
     image: dpage/pgadmin4
     restart: always
     ports:
@@ -41,11 +41,11 @@ services:
     depends_on:
       - postgres
     networks:
-      - auth-template-network
+      - playtime-network
 
 volumes:
-  auth-template-data:
+  playtime-data:
 
 networks:
-  auth-template-network:
-    name: auth-template-network
+  playtime-network:
+    name: playtime-network

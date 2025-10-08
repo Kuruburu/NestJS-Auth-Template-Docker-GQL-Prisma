@@ -45,6 +45,7 @@ export interface SecurityConfig {
   jwtAccessSecret: string;
 }
 export interface OAuthConfig {
+  enableGoogleAuth: boolean;
   WEB: {
     clientId: string;
     authUri: string;

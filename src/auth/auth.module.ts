@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { PasswordService } from './password.service';
 import { AuthService } from './auth.service';
 import { AuthResolver } from './auth.resolver';
-import { SecurityConfig } from '../common/configs/config.interface';
+import { OAuthConfig, SecurityConfig } from '../common/configs/config.interface';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { LocalStrategy } from './strategies/local.strategy';
@@ -41,13 +41,26 @@ import { GoogleStrategy } from './strategies/google.strategy';
     AuthResolver,
     LocalStrategy,
     JwtStrategy,
-    GoogleStrategy,
     GqlAuthGuard,
     LocalAuthGuard,
     GoogleAuthGuard,
     RolesGuard,
     PasswordService,
     UsersService,
+    {
+      provide: 'GOOGLE_STRATEGY',
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        const oAuthConfig = configService.getOrThrow<OAuthConfig>('OAuthConfig');
+        // If any value is missing → skip registration
+
+        if (!oAuthConfig.enableGoogleAuth) {
+          console.warn('[AuthModule] Google Auth disabled – missing environment variables.');
+          return null;
+        }
+        return GoogleStrategy;
+      },
+    },
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
   ],

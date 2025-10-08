@@ -1,4 +1,4 @@
-CONTAINER=auth-template-api
+CONTAINER=playtime-api
 DB_CONTAINER=postgres
 COMPOSE_FILE=docker-compose.yml
 

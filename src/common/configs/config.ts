@@ -11,8 +11,8 @@ const config = (): Config => {
     },
     swagger: {
       enabled: true,
-      title: 'NestJS Auth template',
-      description: 'Auth template for GraphQL and REST api',
+      title: 'Playtime',
+      description: 'Playtime API',
       version: '1.0',
       path: 'api',
       bearerAuth: {
@@ -40,6 +40,7 @@ const config = (): Config => {
       jwtAccessSecret: env.JWT_ACCESS_SECRET,
     },
     OAuthConfig: {
+      enableGoogleAuth: env.ENABLE_GOOGLE_AUTH === 'true' ? true : false,
       WEB: {
         clientId: env.CLIENT_ID,
         clientSecret: env.CLIENT_SECRET,
