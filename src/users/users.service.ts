@@ -32,11 +32,11 @@ export class UsersService {
     }
   }
 
-  async findOne(id: number): Promise<SafeUser | null> {
+  async findOne(id: string): Promise<SafeUser | null> {
     return await this.prisma.user.findUnique({ where: { id }, omit: { passwordHash: true } });
   }
 
-  async findOneOrThrow(id: number): Promise<SafeUser> {
+  async findOneOrThrow(id: string): Promise<SafeUser> {
     try {
       return await this.prisma.user.findUniqueOrThrow({ where: { id }, omit: { passwordHash: true } });
     } catch (error) {
@@ -162,7 +162,7 @@ export class UsersService {
     }
   }
 
-  async remove(id: number): Promise<SafeUser> {
+  async remove(id: string): Promise<SafeUser> {
     try {
       return await this.prisma.user.delete({ where: { id }, omit: { passwordHash: true } });
     } catch (error) {

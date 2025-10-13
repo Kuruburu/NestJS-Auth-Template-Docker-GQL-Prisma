@@ -12,34 +12,37 @@ describe('UsersResolver', () => {
 
   const mockUsers: User[] = [
     {
-      id: 1,
+      id: '0accb717-3a29-441c-8c01-136644e6cf97',
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
-      createdAt: faker.defaultRefDate(),
       email: faker.internet.email(),
       passwordHash: faker.internet.password(),
       role: 'USER',
+
+      createdAt: faker.defaultRefDate(),
       updatedAt: faker.defaultRefDate(),
     },
 
     {
-      id: 2,
+      id: '1f9c188f-02b8-4361-8de7-fa0670e9d454',
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
-      createdAt: faker.defaultRefDate(),
       email: faker.internet.email(),
       passwordHash: faker.internet.password(),
       role: 'USER',
+
+      createdAt: faker.defaultRefDate(),
       updatedAt: faker.defaultRefDate(),
     },
     {
-      id: 3,
+      id: '86d62dbd-07ba-44e5-9853-878624cc568d',
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
-      createdAt: faker.defaultRefDate(),
       email: faker.internet.email(),
       passwordHash: faker.internet.password(),
       role: 'USER',
+
+      createdAt: faker.defaultRefDate(),
       updatedAt: faker.defaultRefDate(),
     },
   ];
@@ -85,23 +88,23 @@ describe('UsersResolver', () => {
     it('should return a single user by id', async () => {
       mockUserService.findOne.mockResolvedValue(mockUsers[0]);
 
-      const result = await resolver.findOne(1);
+      const result = await resolver.findOne(mockUsers[0].id);
 
       expect(result).toEqual(mockUsers[0]);
-      expect(service.findOne).toHaveBeenCalledWith(1);
+      expect(service.findOne).toHaveBeenCalledWith(mockUsers[0].id);
     });
 
     it('should throw NotFoundException if user not found', async () => {
       mockUserService.findOne.mockRejectedValue(new NotFoundException('User with ID 99 not found'));
 
-      await expect(resolver.findOne(99)).rejects.toThrow(NotFoundException);
-      expect(service.findOne).toHaveBeenCalledWith(99);
+      await expect(resolver.findOne('invalid-id')).rejects.toThrow(NotFoundException);
+      expect(service.findOne).toHaveBeenCalledWith('invalid-id');
     });
   });
 
   describe('updateUser', () => {
     it('should throw NotFoundException', async () => {
-      const updateInput: UpdateUserInput = { id: 99, firstName: 'Updated User' };
+      const updateInput: UpdateUserInput = { id: 'invalid-id', firstName: 'Updated User' };
       const notFound = new NotFoundException('User not found');
       mockUserService.update.mockRejectedValue(notFound);
 
@@ -109,7 +112,7 @@ describe('UsersResolver', () => {
       expect(service.update).toHaveBeenCalledWith(updateInput);
     });
     it('should update and return a user', async () => {
-      const updateInput: UpdateUserInput = { id: 1, firstName: 'Updated User' };
+      const updateInput: UpdateUserInput = { id: mockUsers[0].id, firstName: 'Updated User' };
       const updatedUser = { ...mockUsers[0], ...updateInput };
       mockUserService.update.mockResolvedValue(updatedUser);
 
@@ -124,17 +127,17 @@ describe('UsersResolver', () => {
     it('should remove and return a user', async () => {
       mockUserService.remove.mockResolvedValue(mockUsers[0]);
 
-      const result = await resolver.remove(1);
+      const result = await resolver.remove(mockUsers[0].id);
 
       expect(result).toEqual(mockUsers[0]);
-      expect(service.remove).toHaveBeenCalledWith(1);
+      expect(service.remove).toHaveBeenCalledWith(mockUsers[0].id);
     });
 
     it('should throw NotFoundException if user does not exist', async () => {
       mockUserService.remove.mockRejectedValue(new NotFoundException('User with ID 99 not found'));
 
-      await expect(resolver.remove(99)).rejects.toThrow(NotFoundException);
-      expect(service.remove).toHaveBeenCalledWith(99);
+      await expect(resolver.remove('invalid-id')).rejects.toThrow(NotFoundException);
+      expect(service.remove).toHaveBeenCalledWith('invalid-id');
     });
   });
 });

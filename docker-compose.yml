@@ -30,19 +30,6 @@ services:
     networks:
       - playtime-network
 
-  pgadmin:
-    container_name: playtime-pgadmin
-    image: dpage/pgadmin4
-    restart: always
-    ports:
-      - "5050:80"
-    env_file:
-      - .env
-    depends_on:
-      - postgres
-    networks:
-      - playtime-network
-
 volumes:
   playtime-data:
 

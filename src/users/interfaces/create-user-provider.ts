@@ -1,7 +1,7 @@
 import { Provider } from '@prisma/client';
 
 export interface CreateUserProvider {
-  userId: number;
+  userId: string;
   provider: Provider;
   providerId: string;
 }

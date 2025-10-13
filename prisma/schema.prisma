@@ -11,7 +11,7 @@ datasource db {
 }
 
 model User {
-  id           Int    @id @default(autoincrement())
+  id           String @id @default(uuid())
   firstName    String
   lastName     String
   email        String @unique
@@ -23,29 +23,164 @@ model User {
 
   RefreshToken RefreshToken[]
   UserProvider UserProvider[]
+
+  ActivityParticipant ActivityParticipant[]
+  Payment             Payment[]
+  ownedPlaces         Place[]
+  businesses          Business[]
 }
 
 model UserProvider {
   id         Int      @id @default(autoincrement())
   provider   Provider // "local" | "google" | "github"
   providerId String // e.g. Google profile.id, GitHub id
-  userId     Int
+  userId     String
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model RefreshToken {
   id                String    @id @default(uuid())
+  userId            String
   tokenHash         String
   expiresAt         DateTime
   revokedAt         DateTime?
   replacedByTokenId String?
 
-  userId Int
-
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Field {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+  imageUrl    String?
+  placeId     String
+  place       Place   @relation(fields: [placeId], references: [id])
+
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  // Many-to-many with Sport
+  sports     FieldSport[]
+  activities Activity[]
+}
+
+model Sport {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+  minPlayers  Int
+  maxPlayers  Int?
+  imageUrl    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  fieldSports FieldSport[]
+  activities  Activity[]
+}
+
+model FieldSport {
+  fieldId String
+  sportId String
+  field   Field  @relation(fields: [fieldId], references: [id])
+  sport   Sport  @relation(fields: [sportId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([fieldId, sportId])
+}
+
+model Activity {
+  id              String   @id @default(uuid())
+  fieldId         String
+  sportId         String
+  startTime       DateTime
+  endTime         DateTime
+  paymentRequired Boolean  @default(false)
+  price           Float? // optional cost
+  minPlayers      Int
+  maxPlayers      Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  field    Field                 @relation(fields: [fieldId], references: [id])
+  sport    Sport                 @relation(fields: [sportId], references: [id])
+  players  ActivityParticipant[]
+  payments Payment[]
+}
+
+model ActivityParticipant {
+  id         String   @id @default(uuid())
+  activityId String
+  userId     String
+  joinedAt   DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  activity Activity @relation(fields: [activityId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+
+  @@unique([activityId, userId]) // a user can join only once
+}
+
+model Payment {
+  id         String @id @default(uuid())
+  userId     String
+  activityId String
+  amount     Float
+  currency   String @default("PLN")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user     User     @relation(fields: [userId], references: [id])
+  activity Activity @relation(fields: [activityId], references: [id])
+}
+
+model Business {
+  id      String  @id @default(uuid())
+  name    String
+  email   String
+  phone   String?
+  ownerId String // who created this business
+  owner   User    @relation(fields: [ownerId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  places Place[]
+}
+
+model Place {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+  city        String
+  address     String
+  latitude    Float
+  longitude   Float
+  imageUrl    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Ownership — can be user or business
+  ownerId    String?
+  owner      User?     @relation(fields: [ownerId], references: [id])
+  businessId String?
+  business   Business? @relation(fields: [businessId], references: [id])
+
+  fields Field[]
 }
 
 enum Provider {

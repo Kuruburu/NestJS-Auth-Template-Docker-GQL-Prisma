@@ -6,8 +6,7 @@ import { BaseModel } from 'src/common/models/base.model';
 import { Role } from '../../common/models/role.enum';
 
 @ObjectType()
-export class UserDto extends BaseModel implements Omit<User, 'id' | 'passwordHash'> {
-  declare id: number;
+export class UserDto extends BaseModel implements Omit<User, 'passwordHash'> {
   @Field(() => String)
   firstName: string;
 

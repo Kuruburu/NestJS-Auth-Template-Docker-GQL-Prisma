@@ -28,7 +28,7 @@ input LoginInput {
 type Mutation {
   login(data: LoginInput!): Auth!
   refreshToken(data: RefreshTokenInput!): Token!
-  remove(id: Int!): UserDto!
+  remove(id: String!): UserDto!
   signup(data: SignupInput!): Auth!
   update(updateUserInput: UpdateUserInput!): UserDto!
 }
@@ -40,7 +40,7 @@ type Query {
   roleAdmin: String!
   roleTeacher: String!
   roleUser: String!
-  user(id: Int!): UserDto!
+  user(id: String!): UserDto!
   users: [UserDto!]!
 }
 
@@ -78,7 +78,7 @@ type Token {
 input UpdateUserInput {
   email: String
   firstName: String
-  id: Int!
+  id: String!
   lastName: String
   role: Role
 }

@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { UpdateUserInput } from './dto/update-user.input';
 import { UserDto } from './dto/user.dto';
@@ -13,7 +13,7 @@ export class UsersResolver {
   }
 
   @Query(() => UserDto, { name: 'user' })
-  async findOne(@Args('id', { type: () => Int }) id: number) {
+  async findOne(@Args('id', { type: () => String }) id: string) {
     return await this.usersService.findOne(id);
   }
 
@@ -23,7 +23,7 @@ export class UsersResolver {
   }
 
   @Mutation(() => UserDto)
-  async remove(@Args('id', { type: () => Int }) id: number) {
+  async remove(@Args('id', { type: () => String }) id: string) {
     return await this.usersService.remove(id);
   }
 }

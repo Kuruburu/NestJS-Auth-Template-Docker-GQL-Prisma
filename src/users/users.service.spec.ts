@@ -10,34 +10,37 @@ import { PasswordService } from 'src/auth/password.service';
 
 const userArray: User[] = [
   {
-    id: 1,
+    id: '0accb717-3a29-441c-8c01-136644e6cf97',
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
-    createdAt: faker.defaultRefDate(),
     email: faker.internet.email(),
     passwordHash: faker.internet.password(),
     role: 'USER',
+
+    createdAt: faker.defaultRefDate(),
     updatedAt: faker.defaultRefDate(),
   },
 
   {
-    id: 2,
+    id: '1f9c188f-02b8-4361-8de7-fa0670e9d454',
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
-    createdAt: faker.defaultRefDate(),
     email: faker.internet.email(),
     passwordHash: faker.internet.password(),
     role: 'USER',
+
+    createdAt: faker.defaultRefDate(),
     updatedAt: faker.defaultRefDate(),
   },
   {
-    id: 3,
+    id: '86d62dbd-07ba-44e5-9853-878624cc568d',
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
-    createdAt: faker.defaultRefDate(),
     email: faker.internet.email(),
     passwordHash: faker.internet.password(),
     role: 'USER',
+
+    createdAt: faker.defaultRefDate(),
     updatedAt: faker.defaultRefDate(),
   },
 ];
@@ -47,25 +50,37 @@ const userProviderArray: UserProvider[] = [
     id: 1,
     provider: 'LOCAL',
     providerId: 'local-1',
-    userId: 1,
+    userId: '0accb717-3a29-441c-8c01-136644e6cf97',
+
+    createdAt: faker.defaultRefDate(),
+    updatedAt: faker.defaultRefDate(),
   },
   {
     id: 2,
     provider: 'GOOGLE',
     providerId: '75eac49f-4df3-45f6-90a8-cb437e3428c2',
-    userId: 1,
+    userId: '0accb717-3a29-441c-8c01-136644e6cf97',
+
+    createdAt: faker.defaultRefDate(),
+    updatedAt: faker.defaultRefDate(),
   },
   {
     id: 3,
     provider: 'APPLE',
     providerId: '70cd658d-c3f0-49b3-b5a8-2ea851f6a91f',
-    userId: 1,
+    userId: '0accb717-3a29-441c-8c01-136644e6cf97',
+
+    createdAt: faker.defaultRefDate(),
+    updatedAt: faker.defaultRefDate(),
   },
   {
     id: 4,
     provider: 'APPLE',
     providerId: 'e4718e3b-4a9d-420a-856e-6f50b39a2fa9',
-    userId: 2,
+    userId: '1f9c188f-02b8-4361-8de7-fa0670e9d454',
+
+    createdAt: faker.defaultRefDate(),
+    updatedAt: faker.defaultRefDate(),
   },
 ];
 
@@ -114,7 +129,7 @@ describe('UsersService', () => {
     prisma = module.get<PrismaService>(PrismaService);
   });
 
-  const updatedData: UpdateUserInput = { id: 1, firstName: 'Updated' };
+  const updatedData: UpdateUserInput = { id: 'invalid-id', firstName: 'Updated' };
   const prismaNotFoundError = new Prisma.PrismaClientKnownRequestError('No User found', {
     code: 'P2025',
     clientVersion: '4.0.0',
@@ -138,33 +153,33 @@ describe('UsersService', () => {
   describe('findOne', () => {
     it('should return a single user', async () => {
       jest.spyOn(prisma.user, 'findUnique').mockResolvedValueOnce(oneUser);
-      await expect(service.findOne(1)).resolves.toEqual(oneUser);
+      await expect(service.findOne(oneUser.id)).resolves.toEqual(oneUser);
     });
 
     it('should return null if user does not exist', async () => {
       jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(null);
-      await expect(service.findOne(999)).resolves.toBe(null);
+      await expect(service.findOne('invalid-id')).resolves.toBe(null);
     });
 
     it('should throw InternalServerErrorException on DB error', async () => {
       jest.spyOn(prisma.user, 'findUnique').mockRejectedValueOnce(new InternalServerErrorException());
-      await expect(service.findOne(1)).rejects.toThrow(InternalServerErrorException);
+      await expect(service.findOne(oneUser.id)).rejects.toThrow(InternalServerErrorException);
     });
   });
   describe('findOneOrThrow', () => {
     it('should return a single user', async () => {
       jest.spyOn(prisma.user, 'findUniqueOrThrow').mockResolvedValueOnce(oneUser);
-      await expect(service.findOneOrThrow(1)).resolves.toEqual(oneUser);
+      await expect(service.findOneOrThrow(oneUser.id)).resolves.toEqual(oneUser);
     });
 
     it('should throw NotFoundException if user does not exist', async () => {
       jest.spyOn(prisma.user, 'findUniqueOrThrow').mockRejectedValueOnce(prismaNotFoundError);
-      await expect(service.findOneOrThrow(999)).rejects.toThrow(NotFoundException);
+      await expect(service.findOneOrThrow('invalid-id')).rejects.toThrow(NotFoundException);
     });
 
     it('should throw InternalServerErrorException on DB error', async () => {
       jest.spyOn(prisma.user, 'findUniqueOrThrow').mockRejectedValueOnce(new Error('DB error'));
-      await expect(service.findOneOrThrow(1)).rejects.toThrow('Failed to fetch user');
+      await expect(service.findOneOrThrow(oneUser.id)).rejects.toThrow('Failed to fetch user');
     });
   });
 
@@ -240,28 +255,28 @@ describe('UsersService', () => {
 
     it('should throw NotFoundException if user does not exist', async () => {
       jest.spyOn(prisma.user, 'update').mockRejectedValueOnce(prismaNotFoundError);
-      await expect(service.update({ id: 999, firstName: 'Updated' })).rejects.toThrow(NotFoundException);
+      await expect(service.update({ id: 'invalid-id', firstName: 'Updated' })).rejects.toThrow(NotFoundException);
     });
 
     it('should throw error on invalid update data', async () => {
       jest.spyOn(prisma.user, 'update').mockRejectedValueOnce(new Error('DB error'));
-      await expect(service.update({ id: 1, email: null! })).rejects.toThrow();
+      await expect(service.update({ id: oneUser.id, email: null! })).rejects.toThrow();
     });
   });
 
   describe('deleteOne', () => {
     it('should successfully delete a user', async () => {
-      await expect(service.remove(1)).resolves.toEqual(oneUser);
+      await expect(service.remove(oneUser.id)).resolves.toEqual(oneUser);
     });
 
     it('should throw NotFoundException is user does not exist', async () => {
       jest.spyOn(prisma.user, 'delete').mockRejectedValueOnce(prismaNotFoundError);
-      await expect(service.remove(999)).rejects.toThrow(NotFoundException);
+      await expect(service.remove('invalid-id')).rejects.toThrow(NotFoundException);
     });
 
     it('should throw InternalServerErrorException', async () => {
       jest.spyOn(prisma.user, 'delete').mockRejectedValueOnce(new Error('DB error'));
-      await expect(service.remove(999)).rejects.toThrow();
+      await expect(service.remove('invalid-id')).rejects.toThrow();
     });
   });
 });

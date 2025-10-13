@@ -1,5 +1,4 @@
 import { PrismaService } from 'nestjs-prisma';
-import { Role } from '@prisma/client';
 import {
   Injectable,
   NotFoundException,
@@ -31,7 +30,7 @@ export class AuthService {
     private readonly passwordService: PasswordService,
     private readonly configService: ConfigService,
     private readonly userService: UsersService,
-  ) { }
+  ) {}
 
   async signUp(signupInput: SignupInput): Promise<Token> {
     const user = await this.userService.create({
@@ -58,7 +57,7 @@ export class AuthService {
     else return null;
   }
 
-  async validateUserById(userId: number): Promise<SafeUser | null> {
+  async validateUserById(userId: string): Promise<SafeUser | null> {
     return await this.userService.findOne(userId);
   }
 
@@ -91,7 +90,7 @@ export class AuthService {
   async getUserFromToken(token: string): Promise<SafeUser | null> {
     const payload: JwtDto | null = this.jwtService.decode(token);
 
-    if (!payload || typeof payload.sub !== 'number') {
+    if (!payload || typeof payload.sub !== 'string') {
       return null; // invalid or malformed token
     }
     return await this.userService.findOne(payload.sub);
@@ -116,7 +115,7 @@ export class AuthService {
     return { accessToken, ...refreshToken };
   }
 
-  async generateAccessToken(payload: { sub: number; role: Role }): Promise<string> {
+  async generateAccessToken(payload: JwtPayloadDto): Promise<string> {
     try {
       return await this.jwtService.signAsync(payload);
     } catch (error) {
@@ -125,7 +124,7 @@ export class AuthService {
   }
 
   async generateRefreshToken(
-    userId: number,
+    userId: string,
     shortLived: boolean,
   ): Promise<{ refreshToken: string; refreshTokenId: string }> {
     const refreshToken = randomBytes(64).toString('hex');

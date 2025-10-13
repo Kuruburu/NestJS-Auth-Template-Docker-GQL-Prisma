@@ -22,17 +22,7 @@ import { UserDto } from 'src/users/dto/user.dto';
 
 const userArray: User[] = [
   {
-    id: 4,
-    email: 'test@test.com',
-    firstName: 'Alice',
-    lastName: 'Smith',
-    passwordHash: 'password',
-    role: 'USER',
-    createdAt: faker.defaultRefDate(),
-    updatedAt: faker.defaultRefDate(),
-  },
-  {
-    id: 1,
+    id: '665e4d03-48e6-44e3-a52a-4c74314636da',
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
     createdAt: faker.defaultRefDate(),
@@ -43,7 +33,7 @@ const userArray: User[] = [
   },
 
   {
-    id: 2,
+    id: '377d777f-ebfa-4c0d-b2bf-e48033c18e80',
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
     createdAt: faker.defaultRefDate(),
@@ -53,13 +43,24 @@ const userArray: User[] = [
     updatedAt: faker.defaultRefDate(),
   },
   {
-    id: 3,
+    id: 'edd9e5b5-f2af-4ba8-8cea-fcfcb3bdac53',
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
     createdAt: faker.defaultRefDate(),
     email: faker.internet.email(),
     passwordHash: faker.internet.password(),
     role: 'USER',
+    updatedAt: faker.defaultRefDate(),
+  },
+
+  {
+    id: 'beff3017-b621-4fc9-b125-5efdfcc4cbb4',
+    email: 'test@test.com',
+    firstName: 'Alice',
+    lastName: 'Smith',
+    passwordHash: 'password',
+    role: 'USER',
+    createdAt: faker.defaultRefDate(),
     updatedAt: faker.defaultRefDate(),
   },
 ];
@@ -210,30 +211,30 @@ describe('AuthService', () => {
 
   describe('validateUserById', () => {
     it('should return a user if found', async () => {
-      const user: User = { id: 1, email: 'test@test.com' } as User;
+      const user: User = { id: mockUser.id, email: 'test@test.com' } as User;
       mockUserService.findOne.mockResolvedValue(user);
 
-      const result = await authService.validateUserById(1);
+      const result = await authService.validateUserById(mockUser.id);
 
       expect(result).toEqual(user);
-      expect(userService.findOne).toHaveBeenCalledWith(1);
+      expect(userService.findOne).toHaveBeenCalledWith(mockUser.id);
     });
 
     it('should return null if user not found', async () => {
       mockUserService.findOne.mockResolvedValue(null);
 
-      const result = await authService.validateUserById(999);
+      const result = await authService.validateUserById('invalid-id');
 
       expect(result).toBeNull();
-      expect(userService.findOne).toHaveBeenCalledWith(999);
+      expect(userService.findOne).toHaveBeenCalledWith('invalid-id');
     });
   });
 
   describe('getUserFromToken', () => {
     it('should return a user if token is valid and user exists', async () => {
       const token = 'valid.token';
-      const payload = { sub: 1, email: 'test@test.com' };
-      const user: User = { id: 1, email: 'test@test.com' } as User;
+      const payload = { sub: mockUser.id, email: 'test@test.com' };
+      const user: User = { id: mockUser.id, email: 'test@test.com' } as User;
 
       (jwtService.decode as jest.Mock).mockReturnValue(payload);
       mockUserService.findOne.mockResolvedValue(user);
@@ -247,7 +248,7 @@ describe('AuthService', () => {
 
     it('should return null if token is valid but user not found', async () => {
       const token = 'valid.token';
-      const payload = { sub: 999 };
+      const payload = { sub: 'invalid-id' };
       (jwtService.decode as jest.Mock).mockReturnValue(payload);
       mockUserService.findOne.mockResolvedValue(null);
 
@@ -271,7 +272,7 @@ describe('AuthService', () => {
 
   describe('generateAccessToken', () => {
     it('should return a signed access token when jwtService.signAsync succeeds', async () => {
-      const payload = { sub: 1, role: Role.USER };
+      const payload = { sub: mockUser.id, role: Role.USER };
       (jwtService.signAsync as jest.Mock).mockResolvedValue('signed-token');
 
       const result = await authService.generateAccessToken(payload);
@@ -281,7 +282,7 @@ describe('AuthService', () => {
     });
 
     it('should throw InternalServerErrorException when jwtService.signAsync fails', async () => {
-      const payload = { sub: 1, role: Role.USER };
+      const payload = { sub: mockUser.id, role: Role.USER };
       (jwtService.signAsync as jest.Mock).mockRejectedValue(new Error('sign failed'));
 
       await expect(authService.generateAccessToken(payload)).rejects.toThrow(InternalServerErrorException);
@@ -297,7 +298,7 @@ describe('AuthService', () => {
       passwordService.hashPassword.mockResolvedValue('hashed-fixed-token');
       (prisma.refreshToken.create as jest.Mock).mockResolvedValue({ id: 'db-token-id' });
 
-      const result = await authService.generateRefreshToken(1, true);
+      const result = await authService.generateRefreshToken(mockUser.id, true);
 
       expect(passwordService.hashPassword).toHaveBeenCalledWith(expect.any(String)); // "fixed-token" hex
 
@@ -306,7 +307,7 @@ describe('AuthService', () => {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           data: expect.objectContaining({
             tokenHash: expect.any(String) as string,
-            userId: 1,
+            userId: mockUser.id,
             expiresAt: expect.any(String) as string,
           }),
         }),
@@ -322,13 +323,13 @@ describe('AuthService', () => {
       passwordService.hashPassword.mockResolvedValue('hashed-fixed-token');
       (prisma.refreshToken.create as jest.Mock).mockResolvedValue({ id: 'db-token-id' });
 
-      const result = await authService.generateRefreshToken(42, false);
+      const result = await authService.generateRefreshToken(mockUser.id, false);
 
       expect(prisma.refreshToken.create).toHaveBeenCalledWith(
         expect.objectContaining({
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           data: expect.objectContaining({
-            userId: 42,
+            userId: mockUser.id,
           }),
         }),
       );
@@ -342,7 +343,7 @@ describe('AuthService', () => {
       });
       passwordService.hashPassword.mockRejectedValue(new Error('hash fail'));
 
-      await expect(authService.generateRefreshToken(1, true)).rejects.toThrow(InternalServerErrorException);
+      await expect(authService.generateRefreshToken(mockUser.id, true)).rejects.toThrow(InternalServerErrorException);
     });
 
     it('should throw InternalServerErrorException if DB create fails', async () => {
@@ -353,7 +354,7 @@ describe('AuthService', () => {
       passwordService.hashPassword.mockResolvedValue('hashed-fixed-token');
       (prisma.refreshToken.create as jest.Mock).mockRejectedValue(new Error('db fail'));
 
-      await expect(authService.generateRefreshToken(1, true)).rejects.toThrow(InternalServerErrorException);
+      await expect(authService.generateRefreshToken(mockUser.id, true)).rejects.toThrow(InternalServerErrorException);
     });
   });
 
@@ -361,8 +362,8 @@ describe('AuthService', () => {
     it('should return new access token when refresh token is valid', async () => {
       (prisma.refreshToken.findUniqueOrThrow as jest.Mock).mockResolvedValue({
         tokenHash: 'hashed-token',
-        userId: 1,
-        user: { id: 1, role: 'USER' },
+        userId: mockUser.id,
+        user: { id: mockUser.id, role: 'USER' },
       } as any);
 
       passwordService.validatePassword.mockResolvedValue(true);
@@ -375,15 +376,15 @@ describe('AuthService', () => {
         include: { user: true },
       });
       expect(passwordService.validatePassword).toHaveBeenCalledWith('raw-token', 'hashed-token');
-      expect(jwtService.signAsync).toHaveBeenCalledWith({ sub: 1, role: 'USER' });
+      expect(jwtService.signAsync).toHaveBeenCalledWith({ sub: mockUser.id, role: 'USER' });
       expect(result).toBe('new-access-token');
     });
 
     it('should throw UnauthorizedException if tokens do not match', async () => {
       (prisma.refreshToken.findUniqueOrThrow as jest.Mock).mockResolvedValue({
         tokenHash: 'hashed-token',
-        userId: 1,
-        user: { id: 1, role: 'USER' },
+        userId: mockUser.id,
+        user: { id: mockUser.id, role: 'USER' },
       } as any);
 
       passwordService.validatePassword.mockResolvedValue(false);
@@ -463,7 +464,7 @@ describe('AuthService', () => {
 
   describe('generateTokens', () => {
     it('should return access and refresh tokens', async () => {
-      const mockPayload: JwtPayloadDto = { sub: 1, role: 'USER' };
+      const mockPayload: JwtPayloadDto = { sub: mockUser.id, role: 'USER' };
       const mockAccessToken = 'access-token';
       const mockRefresh = { refreshToken: 'refresh-token', refreshTokenId: 'refresh-id' };
 
@@ -483,14 +484,14 @@ describe('AuthService', () => {
     it('should propagate errors from generateAccessToken', async () => {
       jest.spyOn(authService, 'generateAccessToken').mockRejectedValue(new Error('sign error'));
 
-      await expect(authService.generateTokens({ sub: 1, role: 'USER' }, true)).rejects.toThrow('sign error');
+      await expect(authService.generateTokens({ sub: mockUser.id, role: 'USER' }, true)).rejects.toThrow('sign error');
     });
 
     it('should propagate errors from generateRefreshToken', async () => {
       jest.spyOn(authService, 'generateAccessToken').mockResolvedValue('access-token');
       jest.spyOn(authService, 'generateRefreshToken').mockRejectedValue(new Error('db error'));
 
-      await expect(authService.generateTokens({ sub: 1, role: 'USER' }, false)).rejects.toThrow('db error');
+      await expect(authService.generateTokens({ sub: mockUser.id, role: 'USER' }, false)).rejects.toThrow('db error');
     });
   });
 
