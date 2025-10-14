@@ -11,6 +11,7 @@ import config from './common/configs/config';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { GqlConfigService } from './gql-config.service';
 import { configValidationSchema } from './common/configs/config.validation';
+import { SportsModule } from './sports/sports.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { configValidationSchema } from './common/configs/config.validation';
 
     AuthModule,
     UsersModule,
+    SportsModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppResolver],

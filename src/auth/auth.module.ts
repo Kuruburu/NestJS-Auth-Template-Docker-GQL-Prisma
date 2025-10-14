@@ -67,5 +67,4 @@ import { GoogleStrategy } from './strategies/google.strategy';
   controllers: [AuthController],
   exports: [GqlAuthGuard],
 })
-// eslint-disable-next-line prettier/prettier
-export class AuthModule { }
+export class AuthModule {}
