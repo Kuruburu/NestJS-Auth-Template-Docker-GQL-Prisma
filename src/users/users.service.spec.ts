@@ -179,7 +179,7 @@ describe('UsersService', () => {
 
     it('should throw InternalServerErrorException on DB error', async () => {
       jest.spyOn(prisma.user, 'findUniqueOrThrow').mockRejectedValueOnce(new Error('DB error'));
-      await expect(service.findOneOrThrow(oneUser.id)).rejects.toThrow('Failed to fetch user');
+      await expect(service.findOneOrThrow(oneUser.id)).rejects.toThrow(InternalServerErrorException);
     });
   });
 
