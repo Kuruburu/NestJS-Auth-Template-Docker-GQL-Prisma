@@ -20,7 +20,7 @@ export class SportsResolver {
 
   @Query(() => Sport, { name: 'sport' })
   findOne(@Args('id', { type: () => String }) id: string) {
-    return this.sportsService.findOne(id);
+    return this.sportsService.findOneOrThrow(id);
   }
 
   @Mutation(() => Sport)

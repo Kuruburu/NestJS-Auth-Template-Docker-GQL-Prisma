@@ -26,6 +26,7 @@ describe('SportsResolver', () => {
     findOne: jest.fn(),
     update: jest.fn(),
     remove: jest.fn(),
+    findOneOrThrow: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -67,12 +68,12 @@ describe('SportsResolver', () => {
   });
 
   describe('findOne', () => {
-    it('should call service.findOne with id and return the result', async () => {
-      mockSportsService.findOne.mockResolvedValue(mockSport);
+    it('should call service.findOneOrThrow with id and return the result', async () => {
+      mockSportsService.findOneOrThrow.mockResolvedValue(mockSport);
 
       const result = await resolver.findOne('sport-1');
 
-      expect(service.findOne).toHaveBeenCalledWith('sport-1');
+      expect(service.findOneOrThrow).toHaveBeenCalledWith('sport-1');
       expect(result).toEqual(mockSport);
     });
   });

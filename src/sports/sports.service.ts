@@ -3,15 +3,17 @@ import { CreateSportInput } from './dto/create-sport.input';
 import { UpdateSportInput } from './dto/update-sport.input';
 import { PrismaService } from 'nestjs-prisma';
 import {
-  CatchBaseFindUniqueOrThrowError,
+  CatchBaseFindOrThrowError,
   CatchBaseRemoveError,
   CatchBaseUpdateError,
 } from 'src/common/helpers/baseErrorHelper';
+import { Sport } from '@prisma/client';
 
 @Injectable()
 export class SportsService {
   constructor(private readonly prisma: PrismaService) {}
-  async create(createSportInput: CreateSportInput) {
+
+  async create(createSportInput: CreateSportInput): Promise<Sport> {
     try {
       return await this.prisma.sport.create({ data: createSportInput });
     } catch (error) {
@@ -23,32 +25,32 @@ export class SportsService {
     return await this.prisma.sport.findMany();
   }
 
-  async findOneOrThrow(id: string) {
+  async findOneOrThrow(id: string): Promise<Sport> {
     try {
       return await this.prisma.sport.findUniqueOrThrow({ where: { id } });
     } catch (error) {
-      CatchBaseFindUniqueOrThrowError(error, 'Sport', id);
+      return CatchBaseFindOrThrowError(error, 'Sport', id);
     }
   }
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<Sport | null> {
     return await this.prisma.sport.findUnique({ where: { id } });
   }
 
-  async update(updateSportInput: UpdateSportInput) {
+  async update(updateSportInput: UpdateSportInput): Promise<Sport> {
     const { id, ...data } = updateSportInput;
     try {
       return await this.prisma.sport.update({ where: { id }, data });
     } catch (error) {
-      CatchBaseUpdateError(error, 'Sport', id);
+      return CatchBaseUpdateError(error, 'Sport', id);
     }
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<Sport> {
     try {
       return await this.prisma.sport.delete({ where: { id } });
     } catch (error) {
-      CatchBaseRemoveError(error, 'Sport', id);
+      return CatchBaseRemoveError(error, 'Sport', id);
     }
   }
 }

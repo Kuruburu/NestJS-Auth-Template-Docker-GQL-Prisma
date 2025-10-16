@@ -3,7 +3,7 @@ import { SportsService } from './sports.service';
 import { InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import {
-  CatchBaseFindUniqueOrThrowError,
+  CatchBaseFindOrThrowError,
   CatchBaseRemoveError,
   CatchBaseUpdateError,
 } from 'src/common/helpers/baseErrorHelper';
@@ -15,7 +15,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 jest.mock('src/common/helpers/baseErrorHelper', () => ({
   CatchBaseUpdateError: jest.fn(),
   CatchBaseRemoveError: jest.fn(),
-  CatchBaseFindUniqueOrThrowError: jest.fn(),
+  CatchBaseFindOrThrowError: jest.fn(),
 }));
 
 describe('SportsService', () => {
@@ -120,7 +120,7 @@ describe('SportsService', () => {
 
       await service.findOneOrThrow(mockSport.id);
 
-      expect(CatchBaseFindUniqueOrThrowError).toHaveBeenCalledWith(error, 'Sport', mockSport.id);
+      expect(CatchBaseFindOrThrowError).toHaveBeenCalledWith(error, 'Sport', mockSport.id);
     });
   });
 
