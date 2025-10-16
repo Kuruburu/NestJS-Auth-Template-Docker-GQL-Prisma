@@ -14,6 +14,16 @@ type Auth {
   user: UserDto!
 }
 
+type Business {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input CreateBusinessInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
 input CreateSportInput {
   description: String
   imageUrl: String
@@ -34,17 +44,22 @@ input LoginInput {
 }
 
 type Mutation {
+  createBusiness(createBusinessInput: CreateBusinessInput!): Business!
   createSport(createSportInput: CreateSportInput!): Sport!
   login(data: LoginInput!): Auth!
   refreshToken(data: RefreshTokenInput!): Token!
   remove(id: String!): UserDto!
+  removeBusiness(id: Int!): Business!
   removeSport(id: String!): Sport!
   signup(data: SignupInput!): Auth!
   update(updateUserInput: UpdateUserInput!): UserDto!
+  updateBusiness(updateBusinessInput: UpdateBusinessInput!): Business!
   updateSport(updateSportInput: UpdateSportInput!): Sport!
 }
 
 type Query {
+  business(id: Int!): Business!
+  businesses: [Business!]!
   hello(name: String!): String!
   helloWorld: String!
   jwt: String!
@@ -100,6 +115,12 @@ type Token {
 
   """JWT refresh token ID"""
   refreshTokenId: String!
+}
+
+input UpdateBusinessInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
 }
 
 input UpdateSportInput {
