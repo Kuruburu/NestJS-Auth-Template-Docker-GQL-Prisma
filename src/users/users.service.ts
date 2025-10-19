@@ -90,7 +90,7 @@ export class UsersService {
     try {
       return await this.prisma.userProvider.create({ data: { provider, providerId, userId } });
     } catch (error) {
-      return CatchBaseCreateError(error, 'UserProvider', providerId);
+      return CatchBaseCreateError(error, 'UserProvider', { identifier: providerId });
     }
   }
   async getProvidedUser(provider: Provider, providerId: string): Promise<SafeUser | null> {
@@ -116,7 +116,7 @@ export class UsersService {
         omit: { passwordHash: true },
       });
     } catch (error) {
-      return CatchBaseCreateError(error, 'User', { field: 'Email', value: normalizedPayload.email });
+      return CatchBaseCreateError(error, 'User', { identifier: { field: 'Email', value: normalizedPayload.email } });
     }
   }
 

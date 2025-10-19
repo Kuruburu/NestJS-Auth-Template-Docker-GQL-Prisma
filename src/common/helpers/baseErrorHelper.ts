@@ -58,13 +58,23 @@ export const CatchBaseRemoveError = (error: any, model: string, identifier: Iden
  * Catch errors for "create" operations
  * If it has 1 UNIQUE field in the database pass this field as an identifier
  */
-export const CatchBaseCreateError = (error: any, model: string, identifier?: Identifier) => {
+interface BaseErrorProps {
+  identifier?: Identifier;
+  foreignKey?: Identifier;
+}
+export const CatchBaseCreateError = (error: any, model: string, baseErrorProps: BaseErrorProps) => {
+  const { foreignKey, identifier } = baseErrorProps;
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     switch (error.code) {
       case 'P2002': // unique constraint violation
         throw new BadRequestException(
           `${model} with ${identifier ? formatIdentifier(identifier) : 'unique value'} already exists`,
         );
+      case 'P2003':
+        throw new BadRequestException(
+          `Invalid foreign key: ${foreignKey && formatIdentifier(foreignKey)} related record not found`,
+        );
+
       default:
         throw new BadRequestException(error.message);
     }
