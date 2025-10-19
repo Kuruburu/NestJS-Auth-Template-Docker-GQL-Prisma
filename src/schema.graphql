@@ -36,8 +36,15 @@ input CreateBusinessInput {
 }
 
 input CreatePlaceInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  address: String!
+  businessId: String
+  city: String!
+  description: String
+  imageUrl: String
+  latitude: Float!
+  longitude: Float!
+  name: String!
+  ownerId: String
 }
 
 input CreateSportInput {
@@ -77,8 +84,22 @@ type Mutation {
 }
 
 type Place {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  address: String!
+  businessId: ID
+  city: String!
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  description: String
+  id: ID!
+  imageUrl: String
+  latitude: Float!
+  longitude: Float!
+  name: String!
+  ownerId: ID
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
 }
 
 type Query {
@@ -145,21 +166,28 @@ type Token {
 
 input UpdateBusinessInput {
   email: String
-  id: String!
+  id: ID!
   name: String
   ownerId: ID
   phone: String
 }
 
 input UpdatePlaceInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  address: String
+  businessId: String
+  city: String
+  description: String
+  id: ID!
+  imageUrl: String
+  latitude: Float
+  longitude: Float
+  name: String
+  ownerId: String
 }
 
 input UpdateSportInput {
   description: String
-  id: String!
+  id: ID!
   imageUrl: String
   maxPlayers: Int
   minPlayers: Int
@@ -169,7 +197,7 @@ input UpdateSportInput {
 input UpdateUserInput {
   email: String
   firstName: String
-  id: String!
+  id: ID!
   lastName: String
   role: Role
 }
