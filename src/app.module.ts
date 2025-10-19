@@ -13,6 +13,7 @@ import { GqlConfigService } from './gql-config.service';
 import { configValidationSchema } from './common/configs/config.validation';
 import { SportsModule } from './sports/sports.module';
 import { BusinessesModule } from './businesses/businesses.module';
+import { PlacesModule } from './places/places.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { BusinessesModule } from './businesses/businesses.module';
     UsersModule,
     SportsModule,
     BusinessesModule,
+    PlacesModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppResolver],

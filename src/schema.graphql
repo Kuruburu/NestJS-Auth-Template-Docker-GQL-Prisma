@@ -35,6 +35,11 @@ input CreateBusinessInput {
   phone: String
 }
 
+input CreatePlaceInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
 input CreateSportInput {
   description: String
   imageUrl: String
@@ -56,16 +61,24 @@ input LoginInput {
 
 type Mutation {
   createBusiness(createBusinessInput: CreateBusinessInput!): Business!
+  createPlace(createPlaceInput: CreatePlaceInput!): Place!
   createSport(createSportInput: CreateSportInput!): Sport!
   login(data: LoginInput!): Auth!
   refreshToken(data: RefreshTokenInput!): Token!
   remove(id: String!): UserDto!
   removeBusiness(id: String!): Business!
+  removePlace(id: Int!): Place!
   removeSport(id: String!): Sport!
   signup(data: SignupInput!): Auth!
   update(updateUserInput: UpdateUserInput!): UserDto!
   updateBusiness(updateBusinessInput: UpdateBusinessInput!): Business!
+  updatePlace(updatePlaceInput: UpdatePlaceInput!): Place!
   updateSport(updateSportInput: UpdateSportInput!): Sport!
+}
+
+type Place {
+  """Example field (placeholder)"""
+  exampleField: Int!
 }
 
 type Query {
@@ -74,6 +87,8 @@ type Query {
   hello(name: String!): String!
   helloWorld: String!
   jwt: String!
+  place(id: Int!): Place!
+  places: [Place!]!
   roleAdmin: String!
   roleTeacher: String!
   roleUser: String!
@@ -134,6 +149,12 @@ input UpdateBusinessInput {
   name: String
   ownerId: ID
   phone: String
+}
+
+input UpdatePlaceInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
 }
 
 input UpdateSportInput {
