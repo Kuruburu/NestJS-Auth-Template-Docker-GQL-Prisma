@@ -15,13 +15,24 @@ type Auth {
 }
 
 type Business {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  email: String!
+  id: ID!
+  name: String!
+  owner: UserDto
+  ownerId: ID!
+  phone: String
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
 }
 
 input CreateBusinessInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  email: String!
+  name: String!
+  ownerId: ID!
+  phone: String
 }
 
 input CreateSportInput {
@@ -49,7 +60,7 @@ type Mutation {
   login(data: LoginInput!): Auth!
   refreshToken(data: RefreshTokenInput!): Token!
   remove(id: String!): UserDto!
-  removeBusiness(id: Int!): Business!
+  removeBusiness(id: String!): Business!
   removeSport(id: String!): Sport!
   signup(data: SignupInput!): Auth!
   update(updateUserInput: UpdateUserInput!): UserDto!
@@ -58,7 +69,7 @@ type Mutation {
 }
 
 type Query {
-  business(id: Int!): Business!
+  business(id: String!): Business!
   businesses: [Business!]!
   hello(name: String!): String!
   helloWorld: String!
@@ -118,9 +129,11 @@ type Token {
 }
 
 input UpdateBusinessInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  email: String
+  id: String!
+  name: String
+  ownerId: ID
+  phone: String
 }
 
 input UpdateSportInput {

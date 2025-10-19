@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { BusinessesService } from './businesses.service';
 import { Business } from './entities/business.entity';
 import { CreateBusinessInput } from './dto/create-business.input';
@@ -19,17 +19,17 @@ export class BusinessesResolver {
   }
 
   @Query(() => Business, { name: 'business' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.businessesService.findOne(id);
+  findOne(@Args('id', { type: () => String }) id: string) {
+    return this.businessesService.findOneOrThrow(id);
   }
 
   @Mutation(() => Business)
   updateBusiness(@Args('updateBusinessInput') updateBusinessInput: UpdateBusinessInput) {
-    return this.businessesService.update(updateBusinessInput.id, updateBusinessInput);
+    return this.businessesService.update(updateBusinessInput);
   }
 
   @Mutation(() => Business)
-  removeBusiness(@Args('id', { type: () => Int }) id: number) {
+  removeBusiness(@Args('id', { type: () => String }) id: string) {
     return this.businessesService.remove(id);
   }
 }

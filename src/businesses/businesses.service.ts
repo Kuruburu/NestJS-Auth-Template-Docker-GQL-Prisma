@@ -1,26 +1,58 @@
 import { Injectable } from '@nestjs/common';
 import { CreateBusinessInput } from './dto/create-business.input';
 import { UpdateBusinessInput } from './dto/update-business.input';
+import { PrismaService } from 'nestjs-prisma';
+import {
+  CatchBaseCreateError,
+  CatchBaseFindOrThrowError,
+  CatchBaseRemoveError,
+  CatchBaseUpdateError,
+} from 'src/common/helpers/baseErrorHelper';
+import { Business } from './entities/business.entity';
 
 @Injectable()
 export class BusinessesService {
-  create(createBusinessInput: CreateBusinessInput) {
-    return 'This action adds a new business';
+  constructor(private readonly prisma: PrismaService) {}
+  async create(createBusinessInput: CreateBusinessInput): Promise<Business> {
+    try {
+      return await this.prisma.business.create({ data: createBusinessInput });
+    } catch (error) {
+      return CatchBaseCreateError(error, 'Business', {
+        foreignKey: { field: 'ownerId', value: createBusinessInput.ownerId },
+      });
+    }
   }
 
-  findAll() {
-    return `This action returns all businesses`;
+  async findAll(): Promise<Business[]> {
+    return await this.prisma.business.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} business`;
+  async findOne(id: string): Promise<Business | null> {
+    return await this.prisma.business.findUnique({ where: { id } });
   }
 
-  update(id: number, updateBusinessInput: UpdateBusinessInput) {
-    return `This action updates a #${id} business`;
+  async findOneOrThrow(id: string): Promise<Business> {
+    try {
+      return await this.prisma.business.findUniqueOrThrow({ where: { id } });
+    } catch (error) {
+      return CatchBaseFindOrThrowError(error, 'Business', id);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} business`;
+  async update(updateBusinessInput: UpdateBusinessInput): Promise<Business> {
+    const { id, ...data } = updateBusinessInput;
+    try {
+      return await this.prisma.business.update({ where: { id }, data });
+    } catch (error) {
+      return CatchBaseUpdateError(error, 'Business', id);
+    }
+  }
+
+  async remove(id: string): Promise<Business> {
+    try {
+      return await this.prisma.business.delete({ where: { id } });
+    } catch (error) {
+      return CatchBaseRemoveError(error, 'Business', id);
+    }
   }
 }
