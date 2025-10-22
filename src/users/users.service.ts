@@ -83,7 +83,7 @@ export class UsersService {
         omit: { passwordHash: true },
       });
     } catch (error) {
-      return CatchBaseFindOrThrowError(error, 'User', { field: 'Email', value: email });
+      return CatchBaseFindOrThrowError(error, 'User', { email: email });
     }
   }
   async createUserProvider({ provider, providerId, userId }: CreateUserProvider) {
@@ -116,7 +116,7 @@ export class UsersService {
         omit: { passwordHash: true },
       });
     } catch (error) {
-      return CatchBaseCreateError(error, 'User', { identifier: { field: 'Email', value: normalizedPayload.email } });
+      return CatchBaseCreateError(error, 'User', { identifier: { email: normalizedPayload.email } });
     }
   }
 

@@ -18,7 +18,7 @@ export class BusinessesService {
       return await this.prisma.business.create({ data: createBusinessInput });
     } catch (error) {
       return CatchBaseCreateError(error, 'Business', {
-        foreignKey: { field: 'ownerId', value: createBusinessInput.ownerId },
+        foreignKey: { ownerId: createBusinessInput.ownerId },
       });
     }
   }

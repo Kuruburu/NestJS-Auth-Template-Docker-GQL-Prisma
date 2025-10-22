@@ -75,7 +75,7 @@ describe('BusinessesService', () => {
       await service.create(input);
 
       expect(CatchBaseCreateError).toHaveBeenCalledWith(error, 'Business', {
-        foreignKey: { field: 'ownerId', value: 'new-owner-1' },
+        foreignKey: { ownerId: 'new-owner-1' },
       });
     });
   });
