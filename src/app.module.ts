@@ -14,6 +14,7 @@ import { configValidationSchema } from './common/configs/config.validation';
 import { SportsModule } from './sports/sports.module';
 import { BusinessesModule } from './businesses/businesses.module';
 import { PlacesModule } from './places/places.module';
+import { FieldsModule } from './fields/fields.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { PlacesModule } from './places/places.module';
     SportsModule,
     BusinessesModule,
     PlacesModule,
+    FieldsModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppResolver],
