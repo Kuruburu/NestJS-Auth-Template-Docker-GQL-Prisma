@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { PlacesService } from './places.service';
 import { Place } from './entities/place.entity';
 import { CreatePlaceInput } from './dto/create-place.input';
@@ -19,17 +19,17 @@ export class PlacesResolver {
   }
 
   @Query(() => Place, { name: 'place' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.placesService.findOne(id);
+  findOne(@Args('id', { type: () => String }) id: string) {
+    return this.placesService.findOneOrThrow(id);
   }
 
   @Mutation(() => Place)
   updatePlace(@Args('updatePlaceInput') updatePlaceInput: UpdatePlaceInput) {
-    return this.placesService.update(updatePlaceInput.id, updatePlaceInput);
+    return this.placesService.update(updatePlaceInput);
   }
 
   @Mutation(() => Place)
-  removePlace(@Args('id', { type: () => Int }) id: number) {
+  removePlace(@Args('id', { type: () => String }) id: string) {
     return this.placesService.remove(id);
   }
 }

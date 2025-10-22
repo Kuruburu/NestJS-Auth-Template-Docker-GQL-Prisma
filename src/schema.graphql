@@ -74,7 +74,7 @@ type Mutation {
   refreshToken(data: RefreshTokenInput!): Token!
   remove(id: String!): UserDto!
   removeBusiness(id: String!): Business!
-  removePlace(id: Int!): Place!
+  removePlace(id: String!): Place!
   removeSport(id: String!): Sport!
   signup(data: SignupInput!): Auth!
   update(updateUserInput: UpdateUserInput!): UserDto!
@@ -108,7 +108,7 @@ type Query {
   hello(name: String!): String!
   helloWorld: String!
   jwt: String!
-  place(id: Int!): Place!
+  place(id: String!): Place!
   places: [Place!]!
   roleAdmin: String!
   roleTeacher: String!
