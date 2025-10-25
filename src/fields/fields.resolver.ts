@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { FieldsService } from './fields.service';
 import { Field } from './entities/field.entity';
 import { CreateFieldInput } from './dto/create-field.input';
@@ -19,17 +19,17 @@ export class FieldsResolver {
   }
 
   @Query(() => Field, { name: 'field' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.fieldsService.findOne(id);
+  findOne(@Args('id', { type: () => String }) id: string) {
+    return this.fieldsService.findOneOrThrow(id);
   }
 
   @Mutation(() => Field)
   updateField(@Args('updateFieldInput') updateFieldInput: UpdateFieldInput) {
-    return this.fieldsService.update(updateFieldInput.id, updateFieldInput);
+    return this.fieldsService.update(updateFieldInput);
   }
 
   @Mutation(() => Field)
-  removeField(@Args('id', { type: () => Int }) id: number) {
+  removeField(@Args('id', { type: () => String }) id: string) {
     return this.fieldsService.remove(id);
   }
 }

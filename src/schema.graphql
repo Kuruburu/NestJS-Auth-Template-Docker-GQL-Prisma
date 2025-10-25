@@ -35,6 +35,14 @@ input CreateBusinessInput {
   phone: String
 }
 
+input CreateFieldInput {
+  description: String
+  imageUrl: String
+  name: String!
+  placeId: ID!
+  sportsIds: [ID!]
+}
+
 input CreatePlaceInput {
   address: String!
   businessId: String
@@ -60,6 +68,20 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Field {
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  description: String
+  id: ID!
+  imageUrl: String
+  name: String!
+  placeId: ID!
+  sports: [Sport!]!
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+}
+
 input LoginInput {
   email: String!
   password: String!
@@ -68,17 +90,20 @@ input LoginInput {
 
 type Mutation {
   createBusiness(createBusinessInput: CreateBusinessInput!): Business!
+  createField(createFieldInput: CreateFieldInput!): Field!
   createPlace(createPlaceInput: CreatePlaceInput!): Place!
   createSport(createSportInput: CreateSportInput!): Sport!
   login(data: LoginInput!): Auth!
   refreshToken(data: RefreshTokenInput!): Token!
   remove(id: String!): UserDto!
   removeBusiness(id: String!): Business!
+  removeField(id: String!): Field!
   removePlace(id: String!): Place!
   removeSport(id: String!): Sport!
   signup(data: SignupInput!): Auth!
   update(updateUserInput: UpdateUserInput!): UserDto!
   updateBusiness(updateBusinessInput: UpdateBusinessInput!): Business!
+  updateField(updateFieldInput: UpdateFieldInput!): Field!
   updatePlace(updatePlaceInput: UpdatePlaceInput!): Place!
   updateSport(updateSportInput: UpdateSportInput!): Sport!
 }
@@ -105,6 +130,8 @@ type Place {
 type Query {
   business(id: String!): Business!
   businesses: [Business!]!
+  field(id: String!): Field!
+  fields: [Field!]!
   hello(name: String!): String!
   helloWorld: String!
   jwt: String!
@@ -170,6 +197,15 @@ input UpdateBusinessInput {
   name: String
   ownerId: ID
   phone: String
+}
+
+input UpdateFieldInput {
+  description: String
+  id: ID!
+  imageUrl: String
+  name: String
+  placeId: ID
+  sportsIds: [ID!]
 }
 
 input UpdatePlaceInput {
