@@ -33,7 +33,7 @@ function formatObejctToStringWithKeyValuePairs(object: object) {
     const stringKeyValuePair = `${key} - ${value}`;
     return [...acc, stringKeyValuePair];
   }, []);
-  const fKeysJoinedWithOr = arrayOfPossibleFKeys.join('or');
+  const fKeysJoinedWithOr = arrayOfPossibleFKeys.join(' or ');
   return fKeysJoinedWithOr;
 }
 
@@ -73,8 +73,11 @@ export const CatchBaseUpdateError = (error: any, model: string, identifier: Iden
  * Catch errors for "delete/remove" operations
  */
 export const CatchBaseRemoveError = (error: any, model: string, identifier: Identifier) => {
-  if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-    throw new NotFoundException(`${model} with ${formatIdentifier(identifier)} not found`);
+  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    if (error.code === 'P2025') {
+      throw new NotFoundException(`${model} with ${formatIdentifier(identifier)} not found`);
+    }
+    throw new InternalServerErrorException(error.code, error.message);
   }
   throw new InternalServerErrorException(`Failed to remove ${model} with ${formatIdentifier(identifier)}`, {
     cause: error,
@@ -145,13 +148,13 @@ export const CatchBaseCreateError = (error: any, model: string, baseErrorProps: 
         throw new BadRequestException(
           `${model} with ${identifier ? formatIdentifier(identifier) : 'unique value'} already exists`,
         );
-      case 'P2003':
+      case 'P2025':
         throw new BadRequestException(
           `Invalid foreign key: ${foreignKey && formatObejctToStringWithKeyValuePairs(foreignKey)} related record not found`,
         );
 
       default:
-        throw new BadRequestException(error.message);
+        throw new BadRequestException(error.code, error.message);
     }
   }
   throw new InternalServerErrorException(`Failed to create ${model}`, { cause: error });
