@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Activity {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
 type Auth {
   """JWT access token"""
   accessToken: String!
@@ -26,6 +31,11 @@ type Business {
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
+}
+
+input CreateActivityInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
 }
 
 input CreateBusinessInput {
@@ -89,6 +99,7 @@ input LoginInput {
 }
 
 type Mutation {
+  createActivity(createActivityInput: CreateActivityInput!): Activity!
   createBusiness(createBusinessInput: CreateBusinessInput!): Business!
   createField(createFieldInput: CreateFieldInput!): Field!
   createPlace(createPlaceInput: CreatePlaceInput!): Place!
@@ -96,12 +107,14 @@ type Mutation {
   login(data: LoginInput!): Auth!
   refreshToken(data: RefreshTokenInput!): Token!
   remove(id: String!): UserDto!
+  removeActivity(id: Int!): Activity!
   removeBusiness(id: String!): Business!
   removeField(id: String!): Field!
   removePlace(id: String!): Place!
   removeSport(id: String!): Sport!
   signup(data: SignupInput!): Auth!
   update(updateUserInput: UpdateUserInput!): UserDto!
+  updateActivity(updateActivityInput: UpdateActivityInput!): Activity!
   updateBusiness(updateBusinessInput: UpdateBusinessInput!): Business!
   updateField(updateFieldInput: UpdateFieldInput!): Field!
   updatePlace(updatePlaceInput: UpdatePlaceInput!): Place!
@@ -128,6 +141,8 @@ type Place {
 }
 
 type Query {
+  activities: [Activity!]!
+  activity(id: Int!): Activity!
   business(id: String!): Business!
   businesses: [Business!]!
   field(id: String!): Field!
@@ -189,6 +204,12 @@ type Token {
 
   """JWT refresh token ID"""
   refreshTokenId: String!
+}
+
+input UpdateActivityInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
 }
 
 input UpdateBusinessInput {
