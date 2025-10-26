@@ -104,7 +104,6 @@ describe('PlacesResolver (e2e)', () => {
       it('should create a new place', async () => {
         const res = await gql(mutation, createInput, accessToken);
 
-        console.log('createPlace', res.body);
         const place = res.body.data.createPlace;
         expect(place).toBeDefined();
         expect(place.name).toBe('new-place');
@@ -140,7 +139,6 @@ describe('PlacesResolver (e2e)', () => {
 
       const res = await gql(mutation, updateInput, accessToken);
       const updated = res.body.data.updatePlace;
-      console.log('update body', res.body);
 
       expect(updated.id).toBe(createdPlaceId);
       expect(updated.name).toBe(updateInput.data.name);
@@ -168,7 +166,6 @@ describe('PlacesResolver (e2e)', () => {
 
       const res = await gql(query, { id: createdPlaceId }, accessToken);
       // depending on your resolver, this may throw or return null
-      console.log(res.body.data);
       expect(res.body.data).toBeNull();
       expect(res.body.errors).not.toBeNull();
     });

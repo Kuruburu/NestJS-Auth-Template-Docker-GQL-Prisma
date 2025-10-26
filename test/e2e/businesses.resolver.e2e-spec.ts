@@ -76,7 +76,6 @@ describe('BusinessResolver (e2e)', () => {
         `;
 
         const res = await gql(mutation, variablesWithWrongOwnerId, accessToken);
-        console.log('business create body', res.body);
 
         expect(res.body.data).toBeNull();
         expect(res.body.errors).not.toBeNull();
@@ -159,7 +158,6 @@ describe('BusinessResolver (e2e)', () => {
 
       const res = await gql(query, { id: createdBusinessId }, accessToken);
       // depending on your resolver, this may throw or return null
-      console.log(res.body.data);
       expect(res.body.data).toBeNull();
       expect(res.body.errors).not.toBeNull();
     });

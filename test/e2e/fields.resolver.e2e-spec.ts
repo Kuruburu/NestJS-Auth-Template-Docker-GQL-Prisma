@@ -94,7 +94,6 @@ describe('FieldsResolver (e2e)', () => {
       };
 
       const res = await gql(mutation, variables, accessToken);
-      console.log(res.body);
 
       const field = res.body.data.createField;
       expect(field).toBeDefined();
@@ -196,7 +195,6 @@ describe('FieldsResolver (e2e)', () => {
       `;
 
       const res = await gql(mutation, { id: createdFieldId }, accessToken);
-      console.log(res.body);
       const deleted = res.body.data.removeField;
       expect(deleted).toBeDefined();
       expect(deleted.id).toBe(createdFieldId);
@@ -214,7 +212,6 @@ describe('FieldsResolver (e2e)', () => {
 
       const res = await gql(query, { id: createdFieldId }, accessToken);
       // depending on your resolver, this may throw or return null
-      console.log(res.body.data);
       expect(res.body.data).toBeNull();
       expect(res.body.errors).not.toBeNull();
     });

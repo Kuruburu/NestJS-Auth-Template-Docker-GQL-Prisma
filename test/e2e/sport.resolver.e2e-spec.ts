@@ -162,7 +162,6 @@ describe('SportsResolver (e2e)', () => {
 
       const res = await gql(query, { id: createdSportId }, accessToken);
       // depending on your resolver, this may throw or return null
-      console.log(res.body.data);
       expect(res.body.data).toBeNull();
       expect(res.body.errors).not.toBeNull();
     });
