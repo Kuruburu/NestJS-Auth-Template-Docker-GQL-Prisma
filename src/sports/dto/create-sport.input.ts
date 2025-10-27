@@ -1,31 +1,8 @@
 import { InputType, Int, Field } from '@nestjs/graphql';
 import { Prisma } from '@prisma/client';
-import {
-  IsInt,
-  Min,
-  Max,
-  Validate,
-  ValidationArguments,
-  ValidatorConstraint,
-  ValidatorConstraintInterface,
-  IsPositive,
-  IsString,
-  Length,
-} from 'class-validator';
+import { IsInt, Min, Max, Validate, IsPositive, IsString, Length, IsOptional, IsUrl } from 'class-validator';
+import { MinLessThanMax } from 'src/common/validation/custom-class-validation';
 
-@ValidatorConstraint({ name: 'MaxPlayersGreaterThanMin', async: false })
-class MaxPlayersGreaterThanMin implements ValidatorConstraintInterface {
-  validate(maxPlayers: number, args: ValidationArguments) {
-    const { object } = args;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    const minPlayers = (object as any).minPlayers;
-    return typeof minPlayers === 'number' && maxPlayers >= minPlayers;
-  }
-
-  defaultMessage() {
-    return `maxPlayers must be greater than or equal to minPlayers`;
-  }
-}
 @InputType()
 export class CreateSportInput implements Prisma.SportCreateInput {
   @IsString()
@@ -34,25 +11,29 @@ export class CreateSportInput implements Prisma.SportCreateInput {
   name: string;
 
   @IsString()
+  @IsOptional()
   @Length(2, 300)
   @Field(() => String, { nullable: true })
   description?: string | null;
 
+  @Field(() => Int)
   @IsInt()
   @IsPositive()
   @Min(1)
   @Max(50)
-  @Field(() => Int)
+  @Validate(MinLessThanMax)
   minPlayers: number;
 
+  @Field(() => Int, { nullable: true })
+  @IsOptional()
   @IsInt()
   @IsPositive()
   @Min(2)
   @Max(999)
-  @Validate(MaxPlayersGreaterThanMin)
-  @Field(() => Int, { nullable: true })
   maxPlayers?: number;
 
   @Field(() => String, { nullable: true })
+  @IsOptional()
+  @IsUrl()
   imageUrl?: string;
 }
