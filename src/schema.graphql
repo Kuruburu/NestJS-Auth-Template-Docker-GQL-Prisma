@@ -19,6 +19,11 @@ type Activity {
   updatedAt: DateTime!
 }
 
+type ActivityParticipant {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
 type Auth {
   """JWT access token"""
   accessToken: String!
@@ -54,6 +59,11 @@ input CreateActivityInput {
   price: Float
   sportId: ID!
   startTime: DateTime!
+}
+
+input CreateActivityParticipantInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
 }
 
 input CreateBusinessInput {
@@ -118,6 +128,7 @@ input LoginInput {
 
 type Mutation {
   createActivity(createActivityInput: CreateActivityInput!): Activity!
+  createActivityParticipant(createActivityParticipantInput: CreateActivityParticipantInput!): ActivityParticipant!
   createBusiness(createBusinessInput: CreateBusinessInput!): Business!
   createField(createFieldInput: CreateFieldInput!): Field!
   createPlace(createPlaceInput: CreatePlaceInput!): Place!
@@ -126,6 +137,7 @@ type Mutation {
   refreshToken(data: RefreshTokenInput!): Token!
   remove(id: String!): UserDto!
   removeActivity(id: String!): Activity!
+  removeActivityParticipant(id: Int!): ActivityParticipant!
   removeBusiness(id: String!): Business!
   removeField(id: String!): Field!
   removePlace(id: String!): Place!
@@ -133,6 +145,7 @@ type Mutation {
   signup(data: SignupInput!): Auth!
   update(updateUserInput: UpdateUserInput!): UserDto!
   updateActivity(updateActivityInput: UpdateActivityInput!): Activity!
+  updateActivityParticipant(updateActivityParticipantInput: UpdateActivityParticipantInput!): ActivityParticipant!
   updateBusiness(updateBusinessInput: UpdateBusinessInput!): Business!
   updateField(updateFieldInput: UpdateFieldInput!): Field!
   updatePlace(updatePlaceInput: UpdatePlaceInput!): Place!
@@ -161,6 +174,8 @@ type Place {
 type Query {
   activities: [Activity!]!
   activity(id: String!): Activity!
+  activityParticipant(id: Int!): ActivityParticipant!
+  activityParticipants: [ActivityParticipant!]!
   business(id: String!): Business!
   businesses: [Business!]!
   field(id: String!): Field!
@@ -234,6 +249,12 @@ input UpdateActivityInput {
   price: Float
   sportId: ID
   startTime: DateTime
+}
+
+input UpdateActivityParticipantInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
 }
 
 input UpdateBusinessInput {

@@ -16,6 +16,7 @@ import { BusinessesModule } from './businesses/businesses.module';
 import { PlacesModule } from './places/places.module';
 import { FieldsModule } from './fields/fields.module';
 import { ActivitiesModule } from './activities/activities.module';
+import { ActivityParticipantsModule } from './activity-participants/activity-participants.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { ActivitiesModule } from './activities/activities.module';
     PlacesModule,
     FieldsModule,
     ActivitiesModule,
+    ActivityParticipantsModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppResolver],
