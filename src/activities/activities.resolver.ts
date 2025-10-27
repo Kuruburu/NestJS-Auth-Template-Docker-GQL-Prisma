@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { ActivitiesService } from './activities.service';
 import { Activity } from './entities/activity.entity';
 import { CreateActivityInput } from './dto/create-activity.input';
@@ -19,17 +19,17 @@ export class ActivitiesResolver {
   }
 
   @Query(() => Activity, { name: 'activity' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.activitiesService.findOne(id);
+  findOne(@Args('id', { type: () => String }) id: string) {
+    return this.activitiesService.findOneOrThrow(id);
   }
 
   @Mutation(() => Activity)
   updateActivity(@Args('updateActivityInput') updateActivityInput: UpdateActivityInput) {
-    return this.activitiesService.update(updateActivityInput.id, updateActivityInput);
+    return this.activitiesService.update(updateActivityInput);
   }
 
   @Mutation(() => Activity)
-  removeActivity(@Args('id', { type: () => Int }) id: number) {
+  removeActivity(@Args('id', { type: () => String }) id: string) {
     return this.activitiesService.remove(id);
   }
 }

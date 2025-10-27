@@ -3,8 +3,20 @@
 # ------------------------------------------------------
 
 type Activity {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  endTime: DateTime!
+  fieldId: String!
+  id: ID!
+  maxPlayers: Int
+  minPlayers: Int!
+  paymentRequired: Boolean!
+  price: Float
+  sportId: String!
+  startTime: DateTime!
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
 }
 
 type Auth {
@@ -34,8 +46,14 @@ type Business {
 }
 
 input CreateActivityInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  endTime: DateTime!
+  fieldId: ID!
+  maxPlayers: Int
+  minPlayers: Int!
+  paymentRequired: Boolean
+  price: Float
+  sportId: ID!
+  startTime: DateTime!
 }
 
 input CreateBusinessInput {
@@ -107,7 +125,7 @@ type Mutation {
   login(data: LoginInput!): Auth!
   refreshToken(data: RefreshTokenInput!): Token!
   remove(id: String!): UserDto!
-  removeActivity(id: Int!): Activity!
+  removeActivity(id: String!): Activity!
   removeBusiness(id: String!): Business!
   removeField(id: String!): Field!
   removePlace(id: String!): Place!
@@ -142,7 +160,7 @@ type Place {
 
 type Query {
   activities: [Activity!]!
-  activity(id: Int!): Activity!
+  activity(id: String!): Activity!
   business(id: String!): Business!
   businesses: [Business!]!
   field(id: String!): Field!
@@ -207,9 +225,15 @@ type Token {
 }
 
 input UpdateActivityInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  endTime: DateTime
+  fieldId: ID
+  id: ID!
+  maxPlayers: Int
+  minPlayers: Int
+  paymentRequired: Boolean
+  price: Float
+  sportId: ID
+  startTime: DateTime
 }
 
 input UpdateBusinessInput {

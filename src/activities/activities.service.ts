@@ -1,26 +1,59 @@
 import { Injectable } from '@nestjs/common';
 import { CreateActivityInput } from './dto/create-activity.input';
 import { UpdateActivityInput } from './dto/update-activity.input';
+import { PrismaService } from 'nestjs-prisma';
+import { Activity } from '@prisma/client';
+import {
+  CatchBaseCreateError,
+  CatchBaseFindOrThrowError,
+  CatchBaseUpdateError,
+  CatchBaseRemoveError,
+} from 'src/common/helpers/baseErrorHelper';
 
 @Injectable()
 export class ActivitiesService {
-  create(createActivityInput: CreateActivityInput) {
-    return 'This action adds a new activity';
+  constructor(private readonly prisma: PrismaService) {}
+  async create(createActivityInput: CreateActivityInput): Promise<Activity> {
+    const { fieldId, sportId } = createActivityInput;
+    try {
+      return await this.prisma.activity.create({ data: createActivityInput });
+    } catch (error) {
+      return CatchBaseCreateError(error, 'Activity', {
+        foreignKey: { fieldId, sportId },
+      });
+    }
   }
 
-  findAll() {
-    return `This action returns all activities`;
+  async findAll(): Promise<Activity[]> {
+    return await this.prisma.activity.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} activity`;
+  async findOne(id: string): Promise<Activity | null> {
+    return await this.prisma.activity.findUnique({ where: { id } });
   }
 
-  update(id: number, updateActivityInput: UpdateActivityInput) {
-    return `This action updates a #${id} activity`;
+  async findOneOrThrow(id: string): Promise<Activity> {
+    try {
+      return await this.prisma.activity.findUniqueOrThrow({ where: { id } });
+    } catch (error) {
+      return CatchBaseFindOrThrowError(error, 'Activity', id);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} activity`;
+  async update(updateActivityInput: UpdateActivityInput): Promise<Activity> {
+    const { id, ...data } = updateActivityInput;
+    try {
+      return await this.prisma.activity.update({ where: { id }, data });
+    } catch (error) {
+      return CatchBaseUpdateError(error, 'Activity', id);
+    }
+  }
+
+  async remove(id: string): Promise<Activity> {
+    try {
+      return await this.prisma.activity.delete({ where: { id } });
+    } catch (error) {
+      return CatchBaseRemoveError(error, 'Activity', id);
+    }
   }
 }
