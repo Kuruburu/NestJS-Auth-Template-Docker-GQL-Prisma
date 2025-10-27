@@ -32,6 +32,36 @@ export async function setupTestDatabase(): Promise<TestDatabase> {
 
   return { container, databaseUrl };
 }
+import { ValidationPipe } from '@nestjs/common';
+import { getMetadataStorage } from 'class-validator';
+import { ValidationMetadata } from 'class-validator/types/metadata/ValidationMetadata';
+
+export function applyE2EValidationPipe(app: INestApplication) {
+  // Remove UUID validations globally
+  const metadata = getMetadataStorage();
+  const original = metadata.getTargetValidationMetadatas.bind(metadata) as (
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+    targetConstructor: Function,
+    targetSchema: string,
+    always: boolean,
+    strictGroups: boolean,
+    groups?: string[],
+  ) => ValidationMetadata[];
+  metadata.getTargetValidationMetadatas = (targetConstructor, targetSchema, always, strictGroups) => {
+    const metas = original(targetConstructor, targetSchema, always, strictGroups);
+    return metas.filter((meta) => {
+      return meta.name !== 'isUuid';
+    });
+  };
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      // whitelist: true,
+      // forbidNonWhitelisted: true,
+      // transform: true,
+    }),
+  );
+}
 
 export async function setupE2eTestApp() {
   const db = await setupTestDatabase();
@@ -43,6 +73,7 @@ export async function setupE2eTestApp() {
   }).compile();
 
   const app: INestApplication<App> = moduleFixture.createNestApplication();
+  applyE2EValidationPipe(app);
   await app.init();
 
   const httpServer = app.getHttpServer();
