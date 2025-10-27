@@ -51,11 +51,12 @@ import { GoogleStrategy } from './strategies/google.strategy';
       provide: 'GOOGLE_STRATEGY',
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
-        const oAuthConfig = configService.getOrThrow<OAuthConfig>('OAuthConfig');
+        const oAuthConfig = configService.get<OAuthConfig>('OAuthConfig');
         // If any value is missing → skip registration
 
+        if (!oAuthConfig) return null;
         if (!oAuthConfig.enableGoogleAuth) {
-          console.warn('[AuthModule] Google Auth disabled – missing environment variables.');
+          // console.warn('[AuthModule] Google Auth disabled – missing environment variables.');
           return null;
         }
         return GoogleStrategy;
