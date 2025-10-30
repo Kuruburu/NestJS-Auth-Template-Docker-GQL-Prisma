@@ -20,8 +20,18 @@ type Activity {
 }
 
 type ActivityParticipant {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  activity: Activity!
+  activityId: ID!
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  id: ID!
+  joinedAt: DateTime!
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+  user: UserDto!
+  userId: ID!
 }
 
 type Auth {
@@ -62,8 +72,8 @@ input CreateActivityInput {
 }
 
 input CreateActivityParticipantInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  activityId: ID!
+  userId: ID!
 }
 
 input CreateBusinessInput {
@@ -120,6 +130,11 @@ type Field {
   updatedAt: DateTime!
 }
 
+input FindManyActivityParticipantInput {
+  activityId: ID!
+  userId: ID!
+}
+
 input LoginInput {
   email: String!
   password: String!
@@ -133,11 +148,12 @@ type Mutation {
   createField(createFieldInput: CreateFieldInput!): Field!
   createPlace(createPlaceInput: CreatePlaceInput!): Place!
   createSport(createSportInput: CreateSportInput!): Sport!
+  joinActivity(activityId: String!): ActivityParticipant!
   login(data: LoginInput!): Auth!
   refreshToken(data: RefreshTokenInput!): Token!
   remove(id: String!): UserDto!
   removeActivity(id: String!): Activity!
-  removeActivityParticipant(id: Int!): ActivityParticipant!
+  removeActivityParticipant(id: String!): ActivityParticipant!
   removeBusiness(id: String!): Business!
   removeField(id: String!): Field!
   removePlace(id: String!): Place!
@@ -174,7 +190,7 @@ type Place {
 type Query {
   activities: [Activity!]!
   activity(id: String!): Activity!
-  activityParticipant(id: Int!): ActivityParticipant!
+  activityParticipant(id: String!): ActivityParticipant!
   activityParticipants: [ActivityParticipant!]!
   business(id: String!): Business!
   businesses: [Business!]!
@@ -188,6 +204,7 @@ type Query {
   roleAdmin: String!
   roleTeacher: String!
   roleUser: String!
+  searchActivityParticipants(findManyActivityParticipantInput: FindManyActivityParticipantInput!): [ActivityParticipant!]!
   sport(id: String!): Sport!
   sports: [Sport!]!
   user(id: String!): UserDto!
@@ -252,9 +269,9 @@ input UpdateActivityInput {
 }
 
 input UpdateActivityParticipantInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  activityId: ID
+  id: ID!
+  userId: ID
 }
 
 input UpdateBusinessInput {

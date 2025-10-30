@@ -167,7 +167,8 @@ async function main() {
       });
     }
   }
-
+  let activityId = 1;
+  let activityParticipantId = 1;
   // 7️⃣ Activities per field
   for (const field of fields.slice(0, 3)) {
     const relatedSports = await prisma.fieldSport.findMany({
@@ -182,6 +183,7 @@ async function main() {
 
       const activity = await prisma.activity.create({
         data: {
+          id: `activity-${activityId}`,
           fieldId: field.id,
           sportId: rel.sport.id,
           startTime,
@@ -192,14 +194,23 @@ async function main() {
           maxPlayers: rel.sport.maxPlayers,
         },
       });
+      activityId += 1;
 
       // Participants
+      // await prisma.activityParticipant.createMany({
+      //   data: [
+      //     { activityId: activity.id, userId: admin.id },
+      //     { activityId: activity.id, userId: teacher.id },
+      //   ],
+      // });
+
       await prisma.activityParticipant.createMany({
         data: [
-          { activityId: activity.id, userId: admin.id },
-          { activityId: activity.id, userId: teacher.id },
+          { id: `activity-participant-${activityParticipantId}`, activityId: activity.id, userId: admin.id },
+          { id: `activity-participant-${activityParticipantId + 1}`, activityId: activity.id, userId: teacher.id },
         ],
       });
+      activityParticipantId += 2;
 
       // Payments
       await prisma.payment.create({

@@ -148,6 +148,11 @@ export const CatchBaseCreateError = (error: any, model: string, baseErrorProps: 
         throw new BadRequestException(
           `${model} with ${identifier ? formatIdentifier(identifier) : 'unique value'} already exists`,
         );
+
+      case 'P2003':
+        throw new BadRequestException(
+          `Invalid foreign key: ${foreignKey && formatObejctToStringWithKeyValuePairs(foreignKey)} related record not found`,
+        );
       case 'P2025':
         throw new BadRequestException(
           `Invalid foreign key: ${foreignKey && formatObejctToStringWithKeyValuePairs(foreignKey)} related record not found`,

@@ -1,7 +1,15 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { ActivityParticipant as PrismaActivityParticipant } from '@prisma/client';
+import { BaseModel } from 'src/common/models/base.model';
 
 @ObjectType()
-export class ActivityParticipant {
-  @Field(() => Int, { description: 'Example field (placeholder)' })
-  exampleField: number;
+export class ActivityParticipant extends BaseModel implements PrismaActivityParticipant {
+  @Field(() => ID)
+  activityId: string;
+
+  @Field(() => ID)
+  userId: string;
+
+  @Field(() => Date)
+  joinedAt: Date;
 }

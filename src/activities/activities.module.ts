@@ -4,5 +4,6 @@ import { ActivitiesResolver } from './activities.resolver';
 
 @Module({
   providers: [ActivitiesResolver, ActivitiesService],
+  exports: [ActivitiesService],
 })
 export class ActivitiesModule {}

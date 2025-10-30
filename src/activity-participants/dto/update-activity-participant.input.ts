@@ -1,8 +1,8 @@
 import { CreateActivityParticipantInput } from './create-activity-participant.input';
-import { InputType, Field, Int, PartialType } from '@nestjs/graphql';
+import { InputType, Field, PartialType, ID } from '@nestjs/graphql';
 
 @InputType()
 export class UpdateActivityParticipantInput extends PartialType(CreateActivityParticipantInput) {
-  @Field(() => Int)
-  id: number;
+  @Field(() => ID)
+  id: string;
 }
